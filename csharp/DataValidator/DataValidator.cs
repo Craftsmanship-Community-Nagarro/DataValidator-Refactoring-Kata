@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Globalization;
 
 namespace DataValidator;
 
@@ -11,14 +12,14 @@ public class DataValidator
         this.CountryInfoService = countryInfoService;
     }
 
-    public IEnumerable Check(Dictionary<int, List<string>>? data)
+    public IList<ErrorInfo> Check(Dictionary<int, List<string>>? data)
     {
         var errors = new List<ErrorInfo>();
         foreach (KeyValuePair<int, List<string>> entryKey in data)
         {
             int row = entryKey.Key;
             List<string> columns = entryKey.Value;
-            if (columns != null && !columns.Any())
+            if (columns != null && columns.Any())
             {
                 if (!ValidName(columns[0]))
                 {
@@ -32,17 +33,17 @@ public class DataValidator
 
                 if (!ValidC(columns[2]))
                 {
-                    errors.Add(new ErrorInfo(row, string.Format("country code (%s) doesn't exist", columns[2])));
+                    errors.Add(new ErrorInfo(row, string.Format("country code {0} doesn't exist", columns[2])));
                 }
 
                 if (!ValidDate(columns[3]))
                 {
-                    errors.Add(new ErrorInfo(row, string.Format("birthdate (%s) can not be parsed", columns[3])));
+                    errors.Add(new ErrorInfo(row, string.Format("birthdate {0} can not be parsed", columns[3])));
                 }
 
                 if (InvalidMoney(columns[4]))
                 {
-                    errors.Add(new ErrorInfo(row, string.Format("income (%s) can not be parsed", columns[4])));
+                    errors.Add(new ErrorInfo(row, string.Format("income {0} can not be parsed", columns[4])));
                 }
             }
         }
@@ -54,7 +55,7 @@ public class DataValidator
     {
         try
         {
-            var money = Convert.ToDecimal(v);
+            var money = Decimal.Parse(v, new CultureInfo("en-US"));
             if (money == -1)
             {
                 return true;
@@ -98,6 +99,6 @@ public class DataValidator
 
     private bool ValidName(string value)
     {
-        return value != null && String.IsNullOrEmpty(value) && value.Any(char.IsLetter);
+        return value != null && !String.IsNullOrEmpty(value) && value.Any(char.IsLetter);
     }
 }

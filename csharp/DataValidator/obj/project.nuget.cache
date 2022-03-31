@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cVatIe5CyB3iShVTsf5ycXSI3FdzD/fDAaD4KvaIsBj7Ev7xWcdkEUKKqfWzvpTImrqiHrTAa2A4+CKGUV42RQ==",
+  "dgSpecHash": "Zv2zuwHhTTm+cC/e5itbyzKAq8gfdjTZdm0TUByHMMSWRCID6ZW7KbQxROt7vKYDz2dzBEFL/xH1NxqIv90iSQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rolandgerm\\projects\\community\\DataValidator-Refactoring-Kata\\csharp\\DataValidator\\DataValidator.csproj",
+  "projectFilePath": "C:\\Users\\katrinheiderer\\source\\repos\\DataValidator-Refactoring-Kata2\\csharp\\DataValidator\\DataValidator.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
