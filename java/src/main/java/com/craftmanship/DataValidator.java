@@ -19,31 +19,35 @@ public class DataValidator {
 
 		List<ErrorInfo> errors = new ArrayList<>();
 		data.forEach((row, columns) -> {
-
-			if (columns != null && !columns.isEmpty()) {
-				if (!validName(columns.get(0))) {
-					errors.add(new ErrorInfo(row, "first name must contain characters"));
-				}
-
-				if (!validName(columns.get(1))) {
-					errors.add(new ErrorInfo(row, "last name must contain characters"));
-				}
-
-				if (!validC(columns.get(2))) {
-					errors.add(new ErrorInfo(row, String.format("country code (%s) doesn't exist", columns.get(2))));
-				}
-
-				if (!validDate(columns.get(3))) {
-					errors.add(new ErrorInfo(row, String.format("birthdate (%s) can not be parsed", columns.get(3))));
-				}
-
-				if (invalidMoney(columns.get(4))) {
-					errors.add(new ErrorInfo(row, String.format("income (%s) can not be parsed", columns.get(4))));
-				}
-			}
-
+			validateRow(errors, row, columns);
 		});
 		return errors;
+	}
+
+	private void validateRow(List<ErrorInfo> errors, Integer row, List<String> columns) {
+		if (columns == null || columns.isEmpty()) {
+			return;
+		}
+
+		if (!validName(columns.get(0))) {
+			errors.add(new ErrorInfo(row, "first name must contain characters"));
+		}
+
+		if (!validName(columns.get(1))) {
+			errors.add(new ErrorInfo(row, "last name must contain characters"));
+		}
+
+		if (!validC(columns.get(2))) {
+			errors.add(new ErrorInfo(row, String.format("country code (%s) doesn't exist", columns.get(2))));
+		}
+
+		if (!validDate(columns.get(3))) {
+			errors.add(new ErrorInfo(row, String.format("birthdate (%s) can not be parsed", columns.get(3))));
+		}
+
+		if (invalidMoney(columns.get(4))) {
+			errors.add(new ErrorInfo(row, String.format("income (%s) can not be parsed", columns.get(4))));
+		}
 	}
 
 	private boolean validName(String value) {
