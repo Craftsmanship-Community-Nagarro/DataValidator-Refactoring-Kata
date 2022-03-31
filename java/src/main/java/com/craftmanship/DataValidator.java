@@ -1,16 +1,16 @@
 package com.craftmanship;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import com.craftmanship.validation.BirthdateFieldValidator;
 import com.craftmanship.validation.CountryCodeFieldValidator;
 import com.craftmanship.validation.FieldValidator;
+import com.craftmanship.validation.FirstNameFieldValidator;
+import com.craftmanship.validation.IncomeFieldValidator;
+import com.craftmanship.validation.LastNameFieldValidator;
 
 public class DataValidator {
 
@@ -23,11 +23,10 @@ public class DataValidator {
 	}
 
 	public List<ErrorInfo> check(Map<Integer, List<String>> data) {
-
 		List<ErrorInfo> errors = new ArrayList<>();
-		data.forEach((row, columns) -> {
-			validateRow(errors, row, columns);
-		});
+
+		data.forEach((row, columns) -> validateRow(errors, row, columns));
+
 		return errors;
 	}
 
@@ -46,61 +45,17 @@ public class DataValidator {
 	private Map<Integer, FieldValidator> createValidators() {
 		Map<Integer, FieldValidator> validatorMap = new HashMap<>();
 
-		validatorMap.put(0, (row, value) -> {
-			if (!validName(value)) {
-				return Optional.of(new ErrorInfo(row, "first name must contain characters"));
-			}
-			return Optional.empty();
-		});
+		validatorMap.put(0, new FirstNameFieldValidator());
 
-		validatorMap.put(1, (row, value) -> {
-			if (!validName(value)) {
-				return Optional.of(new ErrorInfo(row, "last name must contain characters"));
-			}
-			return Optional.empty();
-		});
+		validatorMap.put(1, new LastNameFieldValidator());
 
 		validatorMap.put(2, new CountryCodeFieldValidator(countryInfoService));
 
-		validatorMap.put(3, (row, value) -> {
-			if (!validDate(value)) {
-				return Optional.of(new ErrorInfo(row, String.format("birthdate (%s) can not be parsed", value)));
-			}
-			return Optional.empty();
-		});
+		validatorMap.put(3, new BirthdateFieldValidator());
 
-		validatorMap.put(4, (row, value) -> {
-			if (invalidMoney(value)) {
-				return Optional.of(new ErrorInfo(row, String.format("income (%s) can not be parsed", value)));
-			}
-			return Optional.empty();
-		});
+		validatorMap.put(4, new IncomeFieldValidator());
+
 		return validatorMap;
-	}
-
-	private boolean validName(String value) {
-		return value != null && !value.isBlank() && value.chars().allMatch(Character::isAlphabetic);
-	}
-
-	private static boolean validDate(String string) {
-		try {
-			LocalDate.parse(string);
-		} catch (DateTimeParseException  e) {
-			return false;
-		}
-		return true;
-	}
-
-	private boolean invalidMoney(String s) {
-		try {
-			BigDecimal money = new BigDecimal(s);
-			if (money.compareTo(BigDecimal.ZERO) == -1) {
-				return true;
-			}
-			return false;
-		} catch (NumberFormatException e) {
-			return true;
-		}
 	}
 
 }
