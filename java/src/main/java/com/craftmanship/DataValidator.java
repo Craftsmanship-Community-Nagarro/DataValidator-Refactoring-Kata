@@ -13,10 +13,12 @@ import com.craftmanship.validation.FieldValidator;
 
 public class DataValidator {
 
-	private CountryInfoService countryInfoService;
+	private final CountryInfoService countryInfoService;
+	private final Map<Integer, FieldValidator> validatorMap;
 
 	public DataValidator(CountryInfoService countryInfoService) {
 		this.countryInfoService = countryInfoService;
+		this.validatorMap = createValidators();
 	}
 
 	public List<ErrorInfo> check(Map<Integer, List<String>> data) {
@@ -33,48 +35,52 @@ public class DataValidator {
 			return;
 		}
 
+
+		validatorMap.forEach((integer, fieldValidator) -> {
+			fieldValidator
+					.validate(row, columns.get(integer))
+					.ifPresent(errors::add);
+		});
+	}
+
+	private Map<Integer, FieldValidator> createValidators() {
 		Map<Integer, FieldValidator> validatorMap = new HashMap<>();
 
-		validatorMap.put(0, value -> {
-			if (!validName(columns.get(0))) {
+		validatorMap.put(0, (row, value) -> {
+			if (!validName(value)) {
 				return Optional.of(new ErrorInfo(row, "first name must contain characters"));
 			}
 			return Optional.empty();
 		});
 
-		validatorMap.put(1, value -> {
-			if (!validName(columns.get(1))) {
+		validatorMap.put(1, (row, value) -> {
+			if (!validName(value)) {
 				return Optional.of(new ErrorInfo(row, "last name must contain characters"));
 			}
 			return Optional.empty();
 		});
 
-		validatorMap.put(2, value -> {
-			if (!validC(columns.get(2))) {
-				return Optional.of(new ErrorInfo(row, String.format("country code (%s) doesn't exist", columns.get(2))));
+		validatorMap.put(2, (row, value) -> {
+			if (!validC(value)) {
+				return Optional.of(new ErrorInfo(row, String.format("country code (%s) doesn't exist", value)));
 			}
 			return Optional.empty();
 		});
 
-		validatorMap.put(3, value -> {
-			if (!validDate(columns.get(3))) {
-				return Optional.of(new ErrorInfo(row, String.format("birthdate (%s) can not be parsed", columns.get(3))));
+		validatorMap.put(3, (row, value) -> {
+			if (!validDate(value)) {
+				return Optional.of(new ErrorInfo(row, String.format("birthdate (%s) can not be parsed", value)));
 			}
 			return Optional.empty();
 		});
 
-		validatorMap.put(4, value -> {
-			if (invalidMoney(columns.get(4))) {
-				return Optional.of(new ErrorInfo(row, String.format("income (%s) can not be parsed", columns.get(4))));
+		validatorMap.put(4, (row, value) -> {
+			if (invalidMoney(value)) {
+				return Optional.of(new ErrorInfo(row, String.format("income (%s) can not be parsed", value)));
 			}
 			return Optional.empty();
 		});
-
-		validatorMap.forEach((integer, fieldValidator) -> {
-			fieldValidator
-					.validate(columns.get(integer))
-					.ifPresent(errors::add);
-		});
+		return validatorMap;
 	}
 
 	private boolean validName(String value) {
