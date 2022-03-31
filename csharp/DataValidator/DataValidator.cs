@@ -12,38 +12,38 @@ public class DataValidator
         this.CountryInfoService = countryInfoService;
     }
 
-    public IList<ErrorInfo> Check(Dictionary<int, List<string>>? data)
+    public IList<ErrorInfo> Check(Dictionary<int, Person>? data)
     {
         var errors = new List<ErrorInfo>();
-        foreach (KeyValuePair<int, List<string>> entryKey in data)
+        foreach (KeyValuePair<int, Person> entryKey in data)
         {
             int row = entryKey.Key;
-            List<string> columns = entryKey.Value;
-            if (columns != null && columns.Any())
+            var person = entryKey.Value;
+            if (person != null)
             {
-                if (!ValidName(columns[0]))
+                if (!ValidName(person.FirstName))
                 {
                     errors.Add(new ErrorInfo(row, "first name must contain characters"));
                 }
 
-                if (!ValidName(columns[1]))
+                if (!ValidName(person.LastName))
                 {
                     errors.Add(new ErrorInfo(row, "last name must contain characters"));
                 }
 
-                if (!ValidC(columns[2]))
+                if (!ValidC(person.CountryCode))
                 {
-                    errors.Add(new ErrorInfo(row, string.Format("country code {0} doesn't exist", columns[2])));
+                    errors.Add(new ErrorInfo(row, string.Format("country code {0} doesn't exist", person.CountryCode)));
                 }
 
-                if (!ValidDate(columns[3]))
+                if (!ValidDate(person.Birthday))
                 {
-                    errors.Add(new ErrorInfo(row, string.Format("birthdate {0} can not be parsed", columns[3])));
+                    errors.Add(new ErrorInfo(row, string.Format("birthdate {0} can not be parsed", person.Birthday)));
                 }
 
-                if (InvalidMoney(columns[4]))
+                if (InvalidMoney(person.Income))
                 {
-                    errors.Add(new ErrorInfo(row, string.Format("income {0} can not be parsed", columns[4])));
+                    errors.Add(new ErrorInfo(row, string.Format("income {0} can not be parsed", person.Income)));
                 }
             }
         }
