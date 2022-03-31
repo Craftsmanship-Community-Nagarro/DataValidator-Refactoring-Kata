@@ -31,7 +31,7 @@ public class DataValidator
                     errors.Add(new ErrorInfo(row, "last name must contain characters"));
                 }
 
-                if (!ValidC(columns[2]))
+                if (!ValidCountry(columns[2]))
                 {
                     errors.Add(new ErrorInfo(row, string.Format("country code {0} doesn't exist", columns[2])));
                 }
@@ -41,7 +41,7 @@ public class DataValidator
                     errors.Add(new ErrorInfo(row, string.Format("birthdate {0} can not be parsed", columns[3])));
                 }
 
-                if (InvalidMoney(columns[4]))
+                if (!ValidMoney(columns[4]))
                 {
                     errors.Add(new ErrorInfo(row, string.Format("income {0} can not be parsed", columns[4])));
                 }
@@ -51,21 +51,25 @@ public class DataValidator
         return errors;
     }
 
-    private bool InvalidMoney(string v)
+    //public IList<ErrorInfo> Check(Dictionary<int, List<PersonalData>>? data)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    private bool ValidMoney(string v)
     {
         try
         {
             var money = Decimal.Parse(v, new CultureInfo("en-US"));
-            if (money == -1)
+            if (money != -1)
             {
                 return true;
             }
-
             return false;
         }
         catch (FormatException)
         {
-            return true;
+            return false;
         }
     }
 
@@ -83,7 +87,7 @@ public class DataValidator
         return true;
     }
 
-    private bool ValidC(string string1)
+    private bool ValidCountry(string string1)
     {
         var allCountries = CountryInfoService.GetAllCountries();
         foreach (string country in allCountries)
