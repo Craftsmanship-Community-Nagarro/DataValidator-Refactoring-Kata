@@ -51,10 +51,44 @@ public class DataValidator
         return errors;
     }
 
-    //public IList<ErrorInfo> Check(Dictionary<int, List<PersonalData>>? data)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public IList<ErrorInfo> Check(Dictionary<int, PersonalData>? data)
+    {
+        var errors = new List<ErrorInfo>();
+        foreach (KeyValuePair<int, PersonalData> entryKey in data!)
+        {
+            int row = entryKey.Key;
+            PersonalData personalData = entryKey.Value;
+            if (personalData != null)
+            {
+                if (!ValidName(personalData.FirstName))
+                {
+                    errors.Add(new ErrorInfo(row, "first name must contain characters"));
+                }
+
+                if (!ValidName(personalData.LastName))
+                {
+                    errors.Add(new ErrorInfo(row, "last name must contain characters"));
+                }
+
+                if (!ValidCountry(personalData.CountryCode))
+                {
+                    errors.Add(new ErrorInfo(row, string.Format("country code {0} doesn't exist", personalData.CountryCode)));
+                }
+
+                if (!ValidDate(personalData.Birthdate))
+                {
+                    errors.Add(new ErrorInfo(row, string.Format("birthdate {0} can not be parsed", personalData.Birthdate)));
+                }
+
+                if (!ValidMoney(personalData.Income))
+                {
+                    errors.Add(new ErrorInfo(row, string.Format("income {0} can not be parsed", personalData.Income)));
+                }
+            }
+        }
+
+        return errors;
+    }
 
     private bool ValidMoney(string v)
     {

@@ -12,10 +12,23 @@ public class DataValidatorTest
 {
 
     [Fact]
+    public void ShouldContainNoErrorsIfDataIsValidWithPersonalData()
+    {
+        Dictionary<int, PersonalData> data = new Dictionary<int, PersonalData>{
+            {1, new PersonalData("Susi", "Sunshine", "AT", "", "2300.20" )}
+        };
+        var dataValidator = new DataValidator.DataValidator(new CountryInfoServiceAT());
+        var errors = dataValidator.Check(data);
+
+
+        errors.Should().BeEmpty();
+    }
+
+    [Fact]
     public void ShouldContainNoErrorsIfDataIsValid()
     {
         Dictionary<int, List<string>> data = new Dictionary<int, List<string>>{
-            {1, new List<string> {"Susi", "Sunshine", "AT", "1971-12-04", "2300.20" }}
+            {1, new List<string> {"Susi", "Sunshine", "AT", "", "2300.20" }}
         };
         var dataValidator = new DataValidator.DataValidator(new CountryInfoServiceAT());
         var errors = dataValidator.Check(data);
