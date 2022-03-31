@@ -15,7 +15,6 @@ public class DataValidatorTest
 
         var errors = dataValidator.Check(new Dictionary<int, List<string>>());
 
-        errors.Should().Be("Implement your tests here");
     }
 }
 
