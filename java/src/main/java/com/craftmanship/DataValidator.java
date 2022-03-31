@@ -46,13 +46,9 @@ public class DataValidator {
 		Map<Integer, FieldValidator> validatorMap = new HashMap<>();
 
 		validatorMap.put(0, new FirstNameFieldValidator());
-
 		validatorMap.put(1, new LastNameFieldValidator());
-
 		validatorMap.put(2, new CountryCodeFieldValidator(countryInfoService));
-
 		validatorMap.put(3, new BirthdateFieldValidator());
-
 		validatorMap.put(4, new IncomeFieldValidator());
 
 		return validatorMap;
