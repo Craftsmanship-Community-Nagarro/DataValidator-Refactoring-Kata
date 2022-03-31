@@ -4,8 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import com.craftmanship.validation.FieldValidator;
 
 public class DataValidator {
 
@@ -29,9 +33,15 @@ public class DataValidator {
 			return;
 		}
 
-		if (!validName(columns.get(0))) {
-			errors.add(new ErrorInfo(row, "first name must contain characters"));
-		}
+		Map<Integer, FieldValidator> validatorMap = new HashMap<>();
+
+
+		validatorMap.forEach((integer, fieldValidator) -> {
+			fieldValidator
+					.validate(columns.get(integer))
+					.ifPresent(errors::add);
+		});
+
 
 		if (!validName(columns.get(1))) {
 			errors.add(new ErrorInfo(row, "last name must contain characters"));
