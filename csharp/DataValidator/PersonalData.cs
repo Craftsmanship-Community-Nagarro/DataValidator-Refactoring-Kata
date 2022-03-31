@@ -12,8 +12,3 @@ public record PersonalData
 
    string Income
 );
-
-
-//public void Deconstruct(out string? firstName, out string? lastName, out string? countryCode, out DateOnly? birthdate, out decimal income) => 
-//     (firstName, lastName, countryCode, birthdate, income) = (FirstName, LastName, CountryCode, Birthdate, Income);
-

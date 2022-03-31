@@ -15,7 +15,7 @@ public class DataValidator
     public IList<ErrorInfo> Check(Dictionary<int, List<string>>? data)
     {
         var errors = new List<ErrorInfo>();
-        foreach (KeyValuePair<int, List<string>> entryKey in data)
+        foreach (KeyValuePair<int, List<string>> entryKey in data!)
         {
             int row = entryKey.Key;
             List<string> columns = entryKey.Value;
