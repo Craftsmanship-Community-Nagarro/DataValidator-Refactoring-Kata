@@ -35,29 +35,46 @@ public class DataValidator {
 
 		Map<Integer, FieldValidator> validatorMap = new HashMap<>();
 
+		validatorMap.put(0, value -> {
+			if (!validName(columns.get(0))) {
+				return Optional.of(new ErrorInfo(row, "first name must contain characters"));
+			}
+			return Optional.empty();
+		});
+
+		validatorMap.put(1, value -> {
+			if (!validName(columns.get(1))) {
+				return Optional.of(new ErrorInfo(row, "last name must contain characters"));
+			}
+			return Optional.empty();
+		});
+
+		validatorMap.put(2, value -> {
+			if (!validC(columns.get(2))) {
+				return Optional.of(new ErrorInfo(row, String.format("country code (%s) doesn't exist", columns.get(2))));
+			}
+			return Optional.empty();
+		});
+
+		validatorMap.put(3, value -> {
+			if (!validDate(columns.get(3))) {
+				return Optional.of(new ErrorInfo(row, String.format("birthdate (%s) can not be parsed", columns.get(3))));
+			}
+			return Optional.empty();
+		});
+
+		validatorMap.put(4, value -> {
+			if (invalidMoney(columns.get(4))) {
+				return Optional.of(new ErrorInfo(row, String.format("income (%s) can not be parsed", columns.get(4))));
+			}
+			return Optional.empty();
+		});
 
 		validatorMap.forEach((integer, fieldValidator) -> {
 			fieldValidator
 					.validate(columns.get(integer))
 					.ifPresent(errors::add);
 		});
-
-
-		if (!validName(columns.get(1))) {
-			errors.add(new ErrorInfo(row, "last name must contain characters"));
-		}
-
-		if (!validC(columns.get(2))) {
-			errors.add(new ErrorInfo(row, String.format("country code (%s) doesn't exist", columns.get(2))));
-		}
-
-		if (!validDate(columns.get(3))) {
-			errors.add(new ErrorInfo(row, String.format("birthdate (%s) can not be parsed", columns.get(3))));
-		}
-
-		if (invalidMoney(columns.get(4))) {
-			errors.add(new ErrorInfo(row, String.format("income (%s) can not be parsed", columns.get(4))));
-		}
 	}
 
 	private boolean validName(String value) {
