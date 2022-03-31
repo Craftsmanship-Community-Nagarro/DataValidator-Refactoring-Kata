@@ -21,27 +21,27 @@ public class DataValidator
             var person = entryKey.Value;
             if (person != null)
             {
-                if (!ValidName(person.FirstName))
+                if (!IsValidName(person.FirstName))
                 {
                     errors.Add(new ErrorInfo(row, "first name must contain characters"));
                 }
 
-                if (!ValidName(person.LastName))
+                if (!IsValidName(person.LastName))
                 {
                     errors.Add(new ErrorInfo(row, "last name must contain characters"));
                 }
 
-                if (!ValidC(person.CountryCode))
+                if (!IsValidCountry(person.CountryCode))
                 {
                     errors.Add(new ErrorInfo(row, string.Format("country code {0} doesn't exist", person.CountryCode)));
                 }
 
-                if (!ValidDate(person.Birthday))
+                if (!IsValidDate(person.Birthday))
                 {
                     errors.Add(new ErrorInfo(row, string.Format("birthdate {0} can not be parsed", person.Birthday)));
                 }
 
-                if (InvalidMoney(person.Income))
+                if (IsInvalidMoney(person.Income))
                 {
                     errors.Add(new ErrorInfo(row, string.Format("income {0} can not be parsed", person.Income)));
                 }
@@ -51,11 +51,11 @@ public class DataValidator
         return errors;
     }
 
-    private bool InvalidMoney(string v)
+    private bool IsInvalidMoney(string income)
     {
         try
         {
-            var money = Decimal.Parse(v, new CultureInfo("en-US"));
+            var money = Decimal.Parse(income, new CultureInfo("en-US"));
             if (money == -1)
             {
                 return true;
@@ -69,7 +69,7 @@ public class DataValidator
         }
     }
 
-    private bool ValidDate(string string1)
+    private bool IsValidDate(string string1)
     {
         try
         {
@@ -83,12 +83,12 @@ public class DataValidator
         return true;
     }
 
-    private bool ValidC(string string1)
+    private bool IsValidCountry(string countryInput)
     {
         var allCountries = CountryInfoService.GetAllCountries();
         foreach (string country in allCountries)
         {
-            if (country == string1)
+            if (country == countryInput)
             {
                 return true;
             }
@@ -97,8 +97,8 @@ public class DataValidator
         return false;
     }
 
-    private bool ValidName(string value)
+    private bool IsValidName(string value)
     {
-        return value != null && !String.IsNullOrEmpty(value) && value.Any(char.IsLetter);
+        return value != null && !string.IsNullOrEmpty(value) && value.Any(char.IsLetter);
     }
 }
