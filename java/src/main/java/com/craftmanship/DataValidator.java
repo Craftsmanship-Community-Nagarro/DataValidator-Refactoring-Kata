@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.craftmanship.validation.CountryCodeFieldValidator;
 import com.craftmanship.validation.FieldValidator;
 
 public class DataValidator {
@@ -35,7 +36,6 @@ public class DataValidator {
 			return;
 		}
 
-
 		validatorMap.forEach((integer, fieldValidator) -> {
 			fieldValidator
 					.validate(row, columns.get(integer))
@@ -60,12 +60,7 @@ public class DataValidator {
 			return Optional.empty();
 		});
 
-		validatorMap.put(2, (row, value) -> {
-			if (!validC(value)) {
-				return Optional.of(new ErrorInfo(row, String.format("country code (%s) doesn't exist", value)));
-			}
-			return Optional.empty();
-		});
+		validatorMap.put(2, new CountryCodeFieldValidator(countryInfoService));
 
 		validatorMap.put(3, (row, value) -> {
 			if (!validDate(value)) {
@@ -85,10 +80,6 @@ public class DataValidator {
 
 	private boolean validName(String value) {
 		return value != null && !value.isBlank() && value.chars().allMatch(Character::isAlphabetic);
-	}
-
-	private boolean validC(String string) {
-		return countryInfoService.getAllCountries().stream().anyMatch(c -> c.equals(string));
 	}
 
 	private static boolean validDate(String string) {
