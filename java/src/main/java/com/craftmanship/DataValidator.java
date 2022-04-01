@@ -1,6 +1,5 @@
 package com.craftmanship;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,21 +24,24 @@ public class DataValidator {
   }
 
   public List<ErrorInfo> check(Map<Integer, List<String>> data) {
-    List<PersonDTO> personDTOList = new ArrayList<>();
-    data.forEach((row, columns) -> {
-      if (columns != null && !columns.isEmpty()) {
-        personDTOList.add(new PersonDTO.Builder()
-                .row(row)
-                .firstName(columns.get(0))
-                .lastName(columns.get(1))
-                .countryCode(columns.get(2))
-                .date(columns.get(3))
-                .income(columns.get(4))
-                .build());
-      }
-    });
+    return checkDTO(new DataDTO(data.entrySet()
+            .stream()
+            .filter(integerListEntry -> Objects.nonNull(integerListEntry.getValue()))
+            .filter(integerListEntry -> !integerListEntry.getValue().isEmpty())
+            .map(integerListEntry -> {
 
-    return checkDTO(new DataDTO(personDTOList));
+              List<String> columns = integerListEntry.getValue();
+
+              return new PersonDTO.Builder()
+                      .row(integerListEntry.getKey())
+                      .firstName(columns.get(0))
+                      .lastName(columns.get(1))
+                      .countryCode(columns.get(2))
+                      .date(columns.get(3))
+                      .income(columns.get(4))
+                      .build();
+
+            }).collect(Collectors.toList())));
   }
 
 
