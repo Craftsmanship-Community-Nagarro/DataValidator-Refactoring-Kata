@@ -24,7 +24,11 @@ public class DataValidator {
   }
 
   public List<ErrorInfo> check(Map<Integer, List<String>> data) {
-    return checkDTO(new DataDTO(data.entrySet()
+    return checkDTO(new DataDTO(extractDataFromMap(data)));
+  }
+
+  private List<PersonDTO> extractDataFromMap(Map<Integer, List<String>> data) {
+    return data.entrySet()
             .stream()
             .filter(integerListEntry -> Objects.nonNull(integerListEntry.getValue()))
             .filter(integerListEntry -> !integerListEntry.getValue().isEmpty())
@@ -41,7 +45,7 @@ public class DataValidator {
                       .income(columns.get(4))
                       .build();
 
-            }).collect(Collectors.toList())));
+            }).collect(Collectors.toList());
   }
 
 
